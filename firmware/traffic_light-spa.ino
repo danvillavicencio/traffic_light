@@ -1,7 +1,15 @@
 #include <LiquidCrystal.h>
 
-LiquidCrystal lcd(12,11,4,5,6,7);
+// Declaración de pines e instanciación de LCD
+const int RS = 12;
+const int E = 11;
+const int DB4 = 4;
+const int DB5 = 5;
+const int DB6 = 6;
+const int DB7 = 7;
+LiquidCrystal lcd(RS,E,DB4,DB5,DB6,DB7);
 
+// Mapas de caracteres personalizados para cruce peatonal
 byte pos0[8] = {
   B00100,
   B00100,
@@ -39,17 +47,25 @@ byte pos3[8] = {
   B10001,
 };
 
-unsigned long unidadTiempoLuces = 150;
-unsigned long multiplicadorAmarillo = 5;
-unsigned long multiplicadorRojo = 14;
-
-const byte pinInterrupcion = 2;
-
+// Indicadores de modo de servicio
 volatile boolean estadoInterrupcion = false;
 volatile boolean enServicio = false;
 
-void setup()
-{
+// Configuración
+// Variables utilizadas en tiempos para el semáforo
+unsigned long unidadTiempoLuces = 150;
+unsigned long multiplicadorAmarillo = 5;
+unsigned long multiplicadorRojo = 14;
+unsigned long multiplicadorServicio = 3;
+unsigned long ciclosServicio = 10;
+unsigned long tiempoBocina = 150;
+unsigned long frecuenciaTono = 494;
+const int filaSenalCruce = 0;
+// Pin de interrupción
+const byte pinInterrupcion = 2;
+
+
+void setup(){
   // Declaración de entradas y salidas
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(A5, OUTPUT);
@@ -79,8 +95,7 @@ void setup()
   digitalWrite(A1, LOW);
 }
 
-void loop()
-{
+void loop(){
   while(!enServicio){
     luzRoja();
     luzVerde();
@@ -93,26 +108,18 @@ void loop()
 void luzVerde(){
   // Activa también la bocina y el signo de caminar
   digitalWrite(A3, HIGH);
-  tone(A1,494,150);
-  lcd.home(); lcd.write(byte(0)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(1,0); lcd.write(byte(1)); delay(unidadTiempoLuces); lcd.clear();
-  tone(A1,494,150);
-  lcd.setCursor(2,0); lcd.write(byte(2)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(3,0); lcd.write(byte(3)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(4,0); lcd.write(byte(0)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(5,0); lcd.write(byte(1)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(6,0); lcd.write(byte(2)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(7,0); lcd.write(byte(3)); delay(unidadTiempoLuces); lcd.clear();
-  tone(A1,494,150);
-  lcd.setCursor(8,0); lcd.write(byte(0)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(9,0); lcd.write(byte(1)); delay(unidadTiempoLuces); lcd.clear();
-  tone(A1,494,150);
-  lcd.setCursor(10,0); lcd.write(byte(2)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(11,0); lcd.write(byte(3)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(12,0); lcd.write(byte(0)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(13,0); lcd.write(byte(1)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(14,0); lcd.write(byte(2)); delay(unidadTiempoLuces); lcd.clear();
-  lcd.setCursor(15,0); lcd.write(byte(3)); delay(unidadTiempoLuces); lcd.clear();
+  tone(A1,frecuenciaTono,tiempoBocina);
+  dosPasos(0,0);
+  tone(A1,frecuenciaTono,tiempoBocina);
+  dosPasos(2,2);
+  dosPasos(4,0);
+  dosPasos(6,2);
+  tone(A1,frecuenciaTono,tiempoBocina);
+  dosPasos(8,0);
+  tone(A1,frecuenciaTono,tiempoBocina);
+  dosPasos(10,2);
+  dosPasos(12,0);
+  dosPasos(14,2);
   digitalWrite(A3, LOW);
 }
 
@@ -130,9 +137,22 @@ void luzRoja(){
   digitalWrite(A5, LOW);
 }
 
+// Función para dar 2 pasos en el caracter personalizado de cruce peatonal
+void dosPasos(int posicionCursor, int numCaracter){
+  lcd.setCursor(posicionCursor,filaSenalCruce);
+  lcd.write(byte(numCaracter));
+  delay(unidadTiempoLuces);
+  lcd.clear();
+  lcd.setCursor(++posicionCursor,filaSenalCruce);
+  lcd.write(byte(++numCaracter));
+  delay(unidadTiempoLuces);
+  lcd.clear();
+}
+
+// ISR
 void interrupcionServicio(){
+  // Toma el estado contrario, ya que el pin de interrupción se activa en LOW
   estadoInterrupcion = !digitalRead(pinInterrupcion);
-  
   if(estadoInterrupcion){
     digitalWrite(LED_BUILTIN, HIGH);
     enServicio = true;
@@ -145,14 +165,14 @@ void servicio(){
   digitalWrite(A4, LOW);
   digitalWrite(A3, LOW);
   digitalWrite(A1, LOW);
-    
+  // Rutina de servicio
   lcd.print("En servicio");
   int contador =  0;
-  while(contador < 10){
+  while(contador < ciclosServicio){
     digitalWrite(A4, HIGH);
-    delay(500);
+    delay(unidadTiempoLuces*ciclosServicio);
     digitalWrite(A4, LOW);
-    delay(500);
+    delay(unidadTiempoLuces*ciclosServicio);
     contador++;
   }
   lcd.clear();
