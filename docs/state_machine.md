@@ -32,13 +32,17 @@ The traffic light system is implemented as a finite state machine (FSM) that ens
 
 ## State Transition Diagram
 
- ┌──── int=0 ─────┐
- ↓		      |
-RED → GREEN → YELLOW  ┤
- ↑		      |
- |		    int=1
- |		      |
- └──── S.M. ←─────┘
+RED
+↓
+GREEN
+↓
+YELLOW
+↓ ↓
+int=1 int=0
+↓ ↓
+S.M. RED
+↓
+RED
 
 ---
 
