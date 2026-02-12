@@ -4,26 +4,26 @@
 - **Board:** Arduino Uno R3
 - **Microcontroller:** ATmega328P
 - **Operating Voltage:** 5V
-The Arduino Uno R3 was selected due to its availability, simplicity, and compatibility with educational simulation tools such as Tinkercad.
+- The Arduino Uno R3 was selected due to its availability, simplicity, and compatibility with educational simulation tools such as Tinkercad.
 
 ## Traffic Light LEDs (Connected in parallel)
 - Red LED
 - Yellow LED
 - Green LED
 - Current-limiting resistor: **1 kΩ**
-Only one LED is active at any given time to simulate a real traffic light sequence, therefore the use of one shared resistor.
+- Only one LED is active at any given time to simulate a real traffic light sequence, therefore the use of one shared resistor.
 
 ## Push Button (Service Mode)
 - Pull-up resistor: **10 kΩ**
-Requests service mode operation. Configured to trigger a hardware interrupt when a FALLING transition is detected.
+- Requests service mode operation. Configured to trigger a hardware interrupt when a FALLING transition is detected.
 
 ## Buzzer (Audible Signal)
 - Piezo buzzer
-Assists visually impaired pedestrians during crossing. Activated during pedestrian crossing phase (Green light).
+- Assists visually impaired pedestrians during crossing. Activated during pedestrian crossing phase (Green light).
 
 ## LCD Display
-Character LCD
-Displays system status. Indicates pedestrian crossing. Uses SPI communication in Arduino Uno R3, pins 11 and 12.
+- Character LCD
+- Displays system status. Indicates pedestrian crossing. Uses SPI communication in Arduino Uno R3, pins 11 and 12.
 
 ---
 
