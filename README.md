@@ -13,10 +13,15 @@ The control logic is implemented using a **finite state machine (FSM)** and an *
 ## Project Structure
 
 traffic-light-embedded/
+
 ├── firmware/
+
 ├── hardware/
+
 ├── simulation/
+
 ├── docs/
+
 └── README.md
 
 This repository contains:
@@ -122,4 +127,5 @@ This project is provided for educational and portfolio purposes.
 * Modular firmware architecture
 * Hardware/software co-design
 * Embedded system documentation
+
 
