@@ -32,17 +32,7 @@ The traffic light system is implemented as a finite state machine (FSM) that ens
 
 ## State Transition Diagram
 
-RED
-↓
-GREEN
-↓
-YELLOW
-↓ ↓
-int=1 int=0
-↓ ↓
-S.M. RED
-↓
-RED
+RED → GREEN → YELLOW → int=0/int=1 → RED/S.M. → RED
 
 ---
 
@@ -60,4 +50,5 @@ RED
 - Each state has a fixed or predefined duration
 - Service mode duration is currently implemented as a random time interval
 - Timing logic is centralized to avoid blocking operations
+
 
